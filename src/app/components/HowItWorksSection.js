@@ -1,6 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { section } from "framer-motion/client";
+import { motion } from "framer-motion"; 
 
 export default function HowItWorksSection() {
   const sectionData = [

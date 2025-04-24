@@ -1,6 +1,5 @@
 import React from "react";
-import StatsCard from "./StatsCard";
-import { title } from "process";
+import StatsCard from "./StatsCard"; 
 
 export default function StatsSection() {
   const statsCard = [

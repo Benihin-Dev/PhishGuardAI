@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll } from "framer-motion";
 
 export default function AboutSection() {
   const targetRef = useRef(null);

@@ -6,7 +6,6 @@ import {
   FaQuestionCircle,
   FaExclamationTriangle,
   FaInfoCircle,
-  FaGlobe,
   FaShieldAlt,
   FaNetworkWired,
   FaLock,
