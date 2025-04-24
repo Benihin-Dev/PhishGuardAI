@@ -1,27 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { motion } from "framer-motion";
 import {
   FaTimesCircle,
   FaCheckCircle,
   FaQuestionCircle,
   FaExclamationTriangle,
+  FaInfoCircle,
+  FaGlobe,
+  FaShieldAlt,
+  FaNetworkWired,
+  FaLock,
+  FaMapMarkerAlt,
+  FaCalendarAlt,
+  FaClock,
 } from "react-icons/fa";
 
 export default function ResultComponent({ result }) {
-  const [animatedScore, setAnimatedScore] = useState(0);
-
-  useEffect(() => {
-    let start = 0;
-    const end = result.score || 0;
-    if (start === end) return;
-
-    let incrementTime = (2 / end) * 1000;
-    let timer = setInterval(() => {
-      start += 1;
-      setAnimatedScore(start);
-      if (start === end) clearInterval(timer);
-    }, incrementTime);
-  }, [result.score]);
-
   const resultStyles = {
     safe: {
       bg: "bg-[#000]",
@@ -30,6 +24,9 @@ export default function ResultComponent({ result }) {
       title: "Safe Website",
       textColor: "text-green-500",
       gradient: "from-green-500/20 to-green-900/20",
+      cardBg: "bg-green-950/50",
+      cardBorder: "border-green-800",
+      cardTitle: "text-green-200",
     },
     phishing: {
       bg: "bg-[#000]",
@@ -38,6 +35,9 @@ export default function ResultComponent({ result }) {
       title: "Phishing Detected",
       textColor: "text-red-500",
       gradient: "from-red-500/20 to-red-900/20",
+      cardBg: "bg-red-950/50",
+      cardBorder: "border-red-800",
+      cardTitle: "text-red-200",
     },
     unknown: {
       bg: "bg-[#000]",
@@ -46,6 +46,9 @@ export default function ResultComponent({ result }) {
       title: "Unable to Determine",
       textColor: "text-yellow-500",
       gradient: "from-yellow-500/20 to-yellow-900/20",
+      cardBg: "bg-yellow-950/50",
+      cardBorder: "border-yellow-800",
+      cardTitle: "text-yellow-200",
     },
     invalid: {
       bg: "bg-[#000]",
@@ -54,12 +57,18 @@ export default function ResultComponent({ result }) {
       title: "Invalid URL",
       textColor: "text-gray-500",
       gradient: "from-gray-500/20 to-gray-900/20",
+      cardBg: "bg-gray-900/50",
+      cardBorder: "border-gray-700",
+      cardTitle: "text-gray-200",
     },
   }[result.type];
 
   return (
-    <div
-      className={`mt-0 p-6 font-thin rounded-xl ${resultStyles.bg} ${resultStyles.border} border backdrop-blur-sm`}
+    <motion.div
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 200, duration: 0.8 }}
+      className={`mt-8 p-6 rounded-xl ${resultStyles.bg} ${resultStyles.border} border backdrop-blur-sm`}
     >
       <div className="flex items-start gap-6">
         <div
@@ -72,62 +81,89 @@ export default function ResultComponent({ result }) {
             {resultStyles.title}
           </h3>
           <p className="text-gray-300 text-lg">{result.message}</p>
-
-          {result.score !== undefined && (
-            <div className="mt-4">
-              <div className="flex items-center gap-3">
-                <div className="text-sm text-gray-400">Safety Score:</div>
-                <div className="flex-grow h-2 bg-gray-700 rounded-full overflow-hidden">
-                  <div
-                    className={`h-full ${
-                      animatedScore > 80
-                        ? "bg-green-500"
-                        : animatedScore > 60
-                        ? "bg-yellow-500"
-                        : "bg-red-500"
-                    } transition-all duration-1000`}
-                    style={{ width: `${animatedScore}%` }}
-                  ></div>
-                </div>
-                <div className={`font-bold ${resultStyles.textColor}`}>
-                  {animatedScore}%
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
         {result.type === "safe" && (
           <>
-            <div className="p-4 rounded-lg bg-green-950/50 border border-green-800">
-              <h4 className="font-semibold text-green-200 mb-3">
-                Security Checks
+            <div className={`p-4 rounded-lg ${resultStyles.cardBg} border ${resultStyles.cardBorder}`}>
+              <h4 className={`font-semibold ${resultStyles.cardTitle} mb-3 flex items-center gap-2`}>
+                <FaShieldAlt /> Security Checks
               </h4>
-              <div className="space-y-1 text-sm">
+              <div className="space-y-2 text-sm">
                 <div className="flex items-center gap-2">
-                  <FaCheckCircle className="text-green-500" />
-                  <span>SSL Certificate: Valid</span>
+                  {result.details.ssl ? (
+                    <FaCheckCircle className="text-green-500" />
+                  ) : (
+                    <FaTimesCircle className="text-red-500" />
+                  )}
+                  <span>SSL Certificate: {result.details.ssl ? "Valid" : "Invalid"}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <FaCheckCircle className="text-green-500" />
+                  <FaCalendarAlt className="text-green-500" />
                   <span>Domain Age: {result.details.age}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <FaCheckCircle className="text-green-500" />
                   <span>Reputation: {result.details.reputation}</span>
                 </div>
+                <div className="mt-3 pt-3 border-t border-green-800">
+                  <div className="text-xs text-gray-300">Probability Assessment:</div>
+                  <div className="flex justify-between mt-1">
+                    <div className="text-green-400">{result.details.legitimateProb} Legitimate</div>
+                    <div className="text-red-400">{result.details.phishingProb} Phishing</div>
+                  </div>
+                </div>
               </div>
             </div>
-            <div className="p-4 rounded-lg bg-green-950/50 border border-green-800">
-              <h4 className="font-semibold text-green-200 mb-3">
-                Additional Information
+
+            <div className={`p-4 rounded-lg ${resultStyles.cardBg} border ${resultStyles.cardBorder}`}>
+              <h4 className={`font-semibold ${resultStyles.cardTitle} mb-3 flex items-center gap-2`}>
+                <FaNetworkWired /> Network Information
               </h4>
-              <div className="space-y-0 text-sm text-gray-300">
-                <p>Last scanned: {result.details.lastScanned}</p>
-                <p>All security checks passed</p>
-                <p>No known threats detected</p>
+              <div className="space-y-1 text-sm text-gray-300">
+                {result.details.networkInfo && (
+                  <>
+                    <p><span className="text-gray-400">IP Address:</span> {result.details.networkInfo["IP Address"]}</p>
+                    <p><span className="text-gray-400">Hostname:</span> {result.details.networkInfo.Hostname}</p>
+                    <p><span className="text-gray-400">Response Time:</span> {result.details.networkInfo["Response Time"]}</p>
+                    
+                    {/* Location Information */}
+                    <div className="mt-2 pt-2 border-t border-green-800">
+                      <p className="flex items-center gap-1 text-gray-400">
+                        <FaMapMarkerAlt /> Location:
+                      </p>
+                      {typeof result.details.networkInfo.Location === 'object' ? (
+                        <div className="ml-4 mt-1">
+                          <p>Country: {result.details.networkInfo.Location.Country || "Unknown"}</p>
+                          <p>Region: {result.details.networkInfo.Location.Region || "Unknown"}</p>
+                          <p>City: {result.details.networkInfo.Location.City || "Unknown"}</p>
+                          <p>ISP: {result.details.networkInfo.Location.ISP || "Unknown"}</p>
+                        </div>
+                      ) : (
+                        <p className="ml-4 mt-1">{result.details.networkInfo.Location || "Unknown"}</p>
+                      )}
+                    </div>
+                    
+                    {/* SSL Certificate Information */}
+                    <div className="mt-2 pt-2 border-t border-green-800">
+                      <p className="flex items-center gap-1 text-gray-400">
+                        <FaLock /> SSL Certificate:
+                      </p>
+                      <div className="ml-4 mt-1">
+                        <p>Status: {result.details.sslCertificate?.Status || "Unknown"}</p>
+                        <p>Expiry Date: {result.details.sslCertificate?.["Expiry Date"] || "Unknown"}</p>
+                        <p>Issuer: {result.details.sslCertificate?.Issuer || "Unknown"}</p>
+                      </div>
+                    </div>
+                    
+                    <p className="mt-2 pt-2 border-t border-green-800 flex items-center gap-1">
+                      <FaClock className="text-gray-400" /> 
+                      <span className="text-gray-400">Last Scanned:</span> {result.details.lastScanned}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </>
@@ -135,32 +171,81 @@ export default function ResultComponent({ result }) {
 
         {result.type === "phishing" && (
           <>
-            <div className="p-4 rounded-lg bg-red-950/50 border border-red-800">
-              <h4 className="font-semibold text-red-200 mb-3">
-                Detected Threats
+            <div className={`p-4 rounded-lg ${resultStyles.cardBg} border ${resultStyles.cardBorder}`}>
+              <h4 className={`font-semibold ${resultStyles.cardTitle} mb-3 flex items-center gap-2`}>
+                <FaExclamationTriangle /> Detected Threats
               </h4>
-              <ul className="space-y-1 text-sm">
-                {result.details.threats.map((threat, index) => (
-                  <li key={index} className="flex items-center gap-2">
-                    <FaTimesCircle className="text-red-500 flex-shrink-0" />
+              <ul className="space-y-2 text-sm">
+                {result.details.threats && result.details.threats.map((threat, index) => (
+                  <li key={index} className="flex items-start gap-2">
+                    <FaTimesCircle className="text-red-500 flex-shrink-0 mt-0.5" />
                     <span>{threat}</span>
                   </li>
                 ))}
               </ul>
+              <div className="mt-3 pt-3 border-t border-red-800">
+                <div className="text-xs text-gray-300">Probability Assessment:</div>
+                <div className="flex justify-between mt-1">
+                  <div className="text-green-400">{result.details.legitimateProb} Legitimate</div>
+                  <div className="text-red-400">{result.details.phishingProb} Phishing</div>
+                </div>
+              </div>
             </div>
-            <div className="p-4 rounded-lg bg-red-950/50 border border-red-800">
-              <h4 className="font-semibold text-red-200 mb-3">
-                Risk Assessment
+
+            <div className={`p-4 rounded-lg ${resultStyles.cardBg} border ${resultStyles.cardBorder}`}>
+              <h4 className={`font-semibold ${resultStyles.cardTitle} mb-3 flex items-center gap-2`}>
+                <FaInfoCircle /> Risk Assessment
               </h4>
-              <div className=" text-sm text-gray-300">
+              <div className="text-sm text-gray-300">
                 <p>
                   Risk Level:{" "}
                   <span className="text-red-500 font-semibold">
                     {result.details.riskLevel}
                   </span>
                 </p>
+                <p>Domain Age: {result.details.age || "Unknown"}</p>
                 <p>Report Count: {result.details.reportCount}</p>
                 <p>Last Detected: {result.details.lastDetected}</p>
+                
+                {/* SSL Certificate Information */}
+                <div className="mt-3 pt-3 border-t border-red-800">
+                  <p className="flex items-center gap-1 text-gray-400">
+                    <FaLock /> SSL Certificate:
+                  </p>
+                  <div className="ml-4 mt-1">
+                    <p>Status: {result.details.sslCertificate?.Status || "Unknown"}</p>
+                    <p>Expiry Date: {result.details.sslCertificate?.["Expiry Date"] || "Unknown"}</p>
+                    <p>Issuer: {result.details.sslCertificate?.Issuer || "Unknown"}</p>
+                  </div>
+                </div>
+                
+                {result.details.networkInfo && (
+                  <div className="mt-3 pt-3 border-t border-red-800">
+                    <p className="flex items-center gap-1 text-gray-400">
+                      <FaNetworkWired /> Network Details:
+                    </p>
+                    <div className="ml-4 mt-1">
+                      <p>IP Address: {result.details.networkInfo["IP Address"]}</p>
+                      <p>Hostname: {result.details.networkInfo.Hostname}</p>
+                      <p>Redirections: {result.details.networkInfo["Redirection Count"]}</p>
+                      
+                      {/* Location Information */}
+                      <div className="mt-2">
+                        <p className="text-gray-400">Location:</p>
+                        {typeof result.details.networkInfo.Location === 'object' ? (
+                          <div className="ml-4">
+                            <p>Country: {result.details.networkInfo.Location.Country || "Unknown"}</p>
+                            <p>Region: {result.details.networkInfo.Location.Region || "Unknown"}</p>
+                            <p>City: {result.details.networkInfo.Location.City || "Unknown"}</p>
+                            <p>ISP: {result.details.networkInfo.Location.ISP || "Unknown"}</p>
+                          </div>
+                        ) : (
+                          <p className="ml-4">{result.details.networkInfo.Location || "Unknown"}</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </>
@@ -202,6 +287,6 @@ export default function ResultComponent({ result }) {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
