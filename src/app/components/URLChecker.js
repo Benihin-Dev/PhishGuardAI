@@ -41,7 +41,7 @@ export default function URLChecker({
     setResult(null);
 
     try {
-      const response = await fetch("https://phishguardaibackend-production.up.railway.app/predict", {
+      const response = await fetch("https://phishguardaibackend-production-e66e.up.railway.app/predict", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
