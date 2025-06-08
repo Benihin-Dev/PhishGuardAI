@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 
 //icons
 import { FaShieldAlt } from "react-icons/fa";
@@ -59,14 +60,20 @@ export default function Footer() {
             <h3 className="font-semibold mb-4">Resources</h3>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
+                <Link
+                  href="/documentation"
+                  className="hover:text-blue-400 transition-colors"
+                >
                   Documentation
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
+                <Link
+                  href="/documentation#api-reference"
+                  className="hover:text-blue-400 transition-colors"
+                >
                   API
-                </a>
+                </Link>
               </li>
               <li>
                 <a href="#" className="hover:text-blue-400 transition-colors">
@@ -84,22 +91,19 @@ export default function Footer() {
             <h3 className="font-semibold mb-4">Connect</h3>
             <ul className="space-y-2 text-gray-400">
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
+                <a
+                  href="https://github.com/Benihin-Dev/Research_Website_for_PhishGuradAI.git"
+                  className="hover:text-blue-400 transition-colors"
+                >
                   GitHub
                 </a>
               </li>
+
               <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  LinkedIn
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
-                  Twitter
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-blue-400 transition-colors">
+                <a
+                  href="https://researchwebsiteforphishguradai.vercel.app/"
+                  className="hover:text-blue-400 transition-colors"
+                >
                   Contact Us
                 </a>
               </li>
